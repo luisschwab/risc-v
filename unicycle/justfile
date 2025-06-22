@@ -1,10 +1,16 @@
 _default:
     @just --list
 
+# Delete artifacts from work/
 clean:
     rm work/*
 
-# Test individual components: mux
+# Test all components
+test-all:
+    @just test mux
+    @just test adder
+
+# Test individual components: mux, adder
 test component="component":
     @just _test-{{component}}
 
@@ -12,5 +18,11 @@ _test-mux:
     ghdl -a --std=08 --workdir=work src/mux.vhd
     ghdl -e --std=08 --workdir=work mux_tb
     ghdl -r --std=08 --workdir=work mux_tb --vcd=work/mux.vcd
+
+_test-adder:
+    ghdl -a --std=08 --workdir=work src/adder.vhd
+    ghdl -e --std=08 --workdir=work adder_tb
+    ghdl -r --std=08 --workdir=work adder_tb --vcd=work/adder.vcd
+
 
 
