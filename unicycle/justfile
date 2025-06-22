@@ -9,6 +9,7 @@ clean:
 test-all:
     @just test mux
     @just test adder
+    @just test pc
 
 # Test individual components: mux, adder
 test component="component":
@@ -24,5 +25,9 @@ _test-adder:
     ghdl -e --std=08 --workdir=work adder_tb
     ghdl -r --std=08 --workdir=work adder_tb --vcd=work/adder.vcd
 
+_test-pc:
+    ghdl -a --std=08 --workdir=work src/pc.vhd
+    ghdl -e --std=08 --workdir=work pc_register_tb
+    ghdl -r --std=08 --workdir=work pc_register_tb --vcd=work/pc.vcd
 
 
