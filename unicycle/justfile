@@ -15,6 +15,8 @@ test-all: work
     @just test adder
     @just test pc
     @just test imem
+    @just test dmem
+    @just test regfile
 
 # Test individual components: mux, adder, pc, imem
 test component="component": work
@@ -50,7 +52,12 @@ _test-regfile:
     ghdl -e --std=08 --workdir=work register_file_tb
     ghdl -r --std=08 --workdir=work register_file_tb --vcd=work/regfile.vcd
 
-# Test and view waveforms for components: mux, adder, pc, imem
+_test-alu:
+    ghdl -a --std=08 --workdir=work src/alu.vhd
+    ghdl -e --std=08 --workdir=work alu_tb
+    ghdl -r --std=08 --workdir=work alu_tb --vcd=work/alu.vcd
+
+# Test and view waveforms for components: mux, adder, pc, imem, dmem, regfile (press CTRL+0 to adjust the zoom)
 wave component="component": work
     @just test {{component}}
     gtkwave static/gtkwave/{{component}}.gtkw &
