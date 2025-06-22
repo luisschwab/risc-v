@@ -99,7 +99,6 @@ BEGIN
         WAIT FOR 10 ns;
         ASSERT result_8 = x"00" REPORT "8-bit: overflow wrap failed" SEVERITY error;
 
-        REPORT "Adder tests passed";
         WAIT;
     END PROCESS stimulus;
 

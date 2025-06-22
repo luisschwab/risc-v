@@ -128,7 +128,6 @@ BEGIN
         WAIT FOR 10 ns;
         ASSERT y3_32 = x"CCCCCCCC" REPORT "mux3 sel=10 failed" SEVERITY error;
 
-        REPORT "Mux tests passed";
         WAIT;
     END PROCESS stimulus;
 

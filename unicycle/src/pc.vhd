@@ -103,7 +103,6 @@ BEGIN
         ASSERT pc = x"00000000" REPORT "PC reset during operation failed" SEVERITY error;
         reset <= '0';
 
-        REPORT "PC register tests passed";
         finished <= true;
         WAIT FOR 10 ns;
         WAIT;
