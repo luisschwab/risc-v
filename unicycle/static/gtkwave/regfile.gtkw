@@ -1,0 +1,33 @@
+[dumpfile] "work/regfile.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-Register File
+@28
+register_file_tb.finished
+register_file_tb.clk
+@200
+-Read Ports
+@22
+register_file_tb.a1[4:0]
+register_file_tb.rd1[31:0]
+register_file_tb.a2[4:0]
+register_file_tb.rd2[31:0]
+@200
+-Write Port
+@22
+register_file_tb.a3[4:0]
+register_file_tb.wd3[31:0]
+@28
+register_file_tb.we3
+@200
+-Key Registers
+@22
+register_file_tb.uut.registers[0][31:0]
+register_file_tb.uut.registers[1][31:0]
+register_file_tb.uut.registers[2][31:0]
+register_file_tb.uut.registers[5][31:0]
+register_file_tb.uut.registers[10][31:0]
+register_file_tb.uut.registers[15][31:0]
+register_file_tb.uut.registers[31][31:0]
