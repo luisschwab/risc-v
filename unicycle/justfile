@@ -40,6 +40,11 @@ _test-imem:
     ghdl -e --std=08 --workdir=work instruction_memory_tb
     ghdl -r --std=08 --workdir=work instruction_memory_tb --vcd=work/imem.vcd
 
+_test-dmem:
+    ghdl -a --std=08 --workdir=work src/dmem.vhd
+    ghdl -e --std=08 --workdir=work data_memory_tb
+    ghdl -r --std=08 --workdir=work data_memory_tb --vcd=work/dmem.vcd
+
 # Test and view waveforms for components: mux, adder, pc, imem
 wave component="component": work
     @just test {{component}}
