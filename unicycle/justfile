@@ -36,7 +36,7 @@ _test-pc:
     ghdl -r --std=08 --workdir=work pc_register_tb --vcd=work/pc.vcd
 
 _test-imem:
-    ghdl -a --std=08 --workdir=work src/instruction_memory.vhd
+    ghdl -a --std=08 --workdir=work src/imem.vhd
     ghdl -e --std=08 --workdir=work instruction_memory_tb
     ghdl -r --std=08 --workdir=work instruction_memory_tb --vcd=work/imem.vcd
 

@@ -1,0 +1,25 @@
+[dumpfile] "work/imem.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-Instruction Memory
+@28
+instruction_memory_tb.finished
+@200
+-Memory Interface
+@22
+instruction_memory_tb.addr[31:0]
+instruction_memory_tb.rd[31:0]
+@200
+-Internal Signals
+@28
+instruction_memory_tb.uut.init_done
+@23
+instruction_memory_tb.uut.max_loaded_addr[31:0]
+@200
+-Test Stimulus
+@22
+instruction_memory_tb.uut.memory[0][31:0]
+instruction_memory_tb.uut.memory[1][31:0]
+instruction_memory_tb.uut.memory[2][31:0]
