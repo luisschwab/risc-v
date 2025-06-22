@@ -1,18 +1,23 @@
 _default:
     @just --list
 
-# Delete artifacts from work/
+# Create work directory
+work:
+    mkdir -p work
+
+# Delete artifacts from work directory
 clean:
     rm work/*
 
 # Test all components
-test-all:
+test-all: work
     @just test mux
     @just test adder
     @just test pc
+    @just test imem
 
-# Test individual components: mux, adder
-test component="component":
+# Test individual components: mux, adder, pc, imem
+test component="component": work
     @just _test-{{component}}
 
 _test-mux:
@@ -30,4 +35,12 @@ _test-pc:
     ghdl -e --std=08 --workdir=work pc_register_tb
     ghdl -r --std=08 --workdir=work pc_register_tb --vcd=work/pc.vcd
 
+_test-imem:
+    ghdl -a --std=08 --workdir=work src/instruction_memory.vhd
+    ghdl -e --std=08 --workdir=work instruction_memory_tb
+    ghdl -r --std=08 --workdir=work instruction_memory_tb --vcd=work/imem.vcd
 
+# Test and view waveforms for components: mux, adder, pc, imem
+wave component="component": work
+    @just test {{component}}
+    gtkwave static/gtkwave/{{component}}.gtkw &
