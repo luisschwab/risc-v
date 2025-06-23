@@ -1,0 +1,27 @@
+[dumpfile] "work/immext.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-Control Signals
+@22
+immext_tb.imm_src[1:0]
+@28
+immext_tb.finished
+@200
+-Instruction Input
+@22
+immext_tb.instr[31:0]
+@200
+-Immediate Output
+@22
+immext_tb.imm_ext[31:0]
+@200
+-Instruction Breakdown
+@22
+immext_tb.instr[31:25]
+immext_tb.instr[24:20]
+immext_tb.instr[19:15]
+immext_tb.instr[14:12]
+immext_tb.instr[11:7]
+immext_tb.instr[6:0]

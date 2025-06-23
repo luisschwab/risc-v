@@ -57,6 +57,11 @@ _test-alu:
     ghdl -e --std=08 --workdir=work alu_tb
     ghdl -r --std=08 --workdir=work alu_tb --vcd=work/alu.vcd
 
+_test-immext:
+    ghdl -a --std=08 --workdir=work src/immext.vhd
+    ghdl -e --std=08 --workdir=work immext_tb
+    ghdl -r --std=08 --workdir=work immext_tb --vcd=work/immext.vcd
+
 # Test and view waveforms for components: mux, adder, pc, imem, dmem, regfile (press CTRL+0 to adjust the zoom)
 wave component="component": work
     @just test {{component}}
