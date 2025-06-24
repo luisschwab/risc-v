@@ -1,0 +1,27 @@
+[dumpfile] "work/mux.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@22
+mux_tb.d0_32[31:0]
+mux_tb.d1_32[31:0]
+mux_tb.d2_32[31:0]
+mux_tb.sel_1
+mux_tb.sel_2[1:0]
+mux_tb.y2_32[31:0]
+mux_tb.y3_32[31:0]
+@200
+-mux2 instance
+@22
+mux_tb.uut_mux2.d0[31:0]
+mux_tb.uut_mux2.d1[31:0]
+mux_tb.uut_mux2.sel
+mux_tb.uut_mux2.y[31:0]
+@200
+-mux3 instance
+@22
+mux_tb.uut_mux3.d0[31:0]
+mux_tb.uut_mux3.d1[31:0]
+mux_tb.uut_mux3.d2[31:0]
+mux_tb.uut_mux3.sel[1:0]
+mux_tb.uut_mux3.y[31:0]

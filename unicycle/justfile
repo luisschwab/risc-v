@@ -1,0 +1,91 @@
+_default:
+    @just --list
+
+# Create work directory
+_work:
+    mkdir -p work
+
+# Delete artifacts from work directory
+clean:
+    rm work/*
+
+# Test all components
+test-all: _work
+    @just test adder
+    @just test alu
+    @just test control
+    @just test dmem
+    @just test imem
+    @just test immext
+    @just test mux
+    @just test pc
+    @just test regfile
+    @just test cpu
+
+# Test individual components: cpu, adder, alu, control, dmem, imem, immext, mux, pc, regfile
+test component="component": _work
+    @just _test-{{component}}
+
+_test-cpu:
+    ghdl -a --std=08 --workdir=work src/adder.vhd
+    ghdl -a --std=08 --workdir=work src/alu.vhd
+    ghdl -a --std=08 --workdir=work src/control.vhd
+    ghdl -a --std=08 --workdir=work src/dmem.vhd
+    ghdl -a --std=08 --workdir=work src/imem.vhd
+    ghdl -a --std=08 --workdir=work src/immext.vhd
+    ghdl -a --std=08 --workdir=work src/mux.vhd
+    ghdl -a --std=08 --workdir=work src/pc.vhd
+    ghdl -a --std=08 --workdir=work src/regfile.vhd
+    ghdl -a --std=08 --workdir=work src/cpu.vhd
+    ghdl -e --std=08 --workdir=work cpu_tb
+    ghdl -r --std=08 --workdir=work cpu_tb --vcd=work/cpu.vcd
+
+_test-adder:
+    ghdl -a --std=08 --workdir=work src/adder.vhd
+    ghdl -e --std=08 --workdir=work adder_tb
+    ghdl -r --std=08 --workdir=work adder_tb --vcd=work/adder.vcd
+
+_test-alu:
+    ghdl -a --std=08 --workdir=work src/alu.vhd
+    ghdl -e --std=08 --workdir=work alu_tb
+    ghdl -r --std=08 --workdir=work alu_tb --vcd=work/alu.vcd
+
+_test-control:
+    ghdl -a --std=08 --workdir=work src/control.vhd
+    ghdl -e --std=08 --workdir=work control_unit_tb
+    ghdl -r --std=08 --workdir=work control_unit_tb --vcd=work/control.vcd
+
+_test-dmem:
+    ghdl -a --std=08 --workdir=work src/dmem.vhd
+    ghdl -e --std=08 --workdir=work data_memory_tb
+    ghdl -r --std=08 --workdir=work data_memory_tb --vcd=work/dmem.vcd
+
+_test-imem:
+    ghdl -a --std=08 --workdir=work src/imem.vhd
+    ghdl -e --std=08 --workdir=work instruction_memory_tb
+    ghdl -r --std=08 --workdir=work instruction_memory_tb --vcd=work/imem.vcd
+
+_test-immext:
+    ghdl -a --std=08 --workdir=work src/immext.vhd
+    ghdl -e --std=08 --workdir=work immext_tb
+    ghdl -r --std=08 --workdir=work immext_tb --vcd=work/immext.vcd
+
+_test-mux:
+    ghdl -a --std=08 --workdir=work src/mux.vhd
+    ghdl -e --std=08 --workdir=work mux_tb
+    ghdl -r --std=08 --workdir=work mux_tb --vcd=work/mux.vcd
+
+_test-pc:
+    ghdl -a --std=08 --workdir=work src/pc.vhd
+    ghdl -e --std=08 --workdir=work pc_register_tb
+    ghdl -r --std=08 --workdir=work pc_register_tb --vcd=work/pc.vcd
+
+_test-regfile:
+    ghdl -a --std=08 --workdir=work src/regfile.vhd
+    ghdl -e --std=08 --workdir=work register_file_tb
+    ghdl -r --std=08 --workdir=work register_file_tb --vcd=work/regfile.vcd
+
+# Test and view waveforms for components: cpu, adder, alu, control, dmem, imem, immext, mux, pc, regfile (press CTRL+0 to adjust the zoom)
+wave component="component": _work
+    @just test {{component}}
+    gtkwave static/gtkwave/{{component}}.gtkw &

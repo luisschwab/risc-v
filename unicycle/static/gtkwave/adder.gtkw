@@ -1,0 +1,16 @@
+[dumpfile] "work/adder.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-32-bit adder
+@22
+adder_tb.a_32[31:0]
+adder_tb.b_32[31:0]
+adder_tb.result_32[31:0]
+@200
+-8-bit adder
+@22
+adder_tb.a_8[7:0]
+adder_tb.b_8[7:0]
+adder_tb.result_8[7:0]

@@ -1,0 +1,31 @@
+[dumpfile] "work/dmem.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-Data Memory
+@28
+data_memory_tb.finished
+data_memory_tb.clk
+@200
+-Memory Interface
+@22
+data_memory_tb.addr[31:0]
+data_memory_tb.wr_data[31:0]
+@28
+data_memory_tb.wr_en
+@22
+data_memory_tb.rd_data[31:0]
+@200
+-Internal Signals
+@22
+data_memory_tb.uut.read_address[9:0]
+@200
+-Test Memory Contents
+@22
+data_memory_tb.uut.memory[0][31:0]
+data_memory_tb.uut.memory[1][31:0]
+data_memory_tb.uut.memory[2][31:0]
+data_memory_tb.uut.memory[3][31:0]
+data_memory_tb.uut.memory[4][31:0]
+data_memory_tb.uut.memory[5][31:0]

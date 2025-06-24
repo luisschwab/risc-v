@@ -1,0 +1,27 @@
+[dumpfile] "work/alu.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-ALU Control
+@22
+alu_tb.alu_control[2:0]
+@28
+alu_tb.finished
+@200
+-ALU Inputs
+@22
+alu_tb.src_a[31:0]
+alu_tb.src_b[31:0]
+@200
+-ALU Outputs
+@22
+alu_tb.alu_result[31:0]
+@28
+alu_tb.zero
+@200
+-Internal Signals
+@22
+alu_tb.uut.src_a_signed[31:0]
+alu_tb.uut.src_b_signed[31:0]
+alu_tb.uut.result_internal[31:0]

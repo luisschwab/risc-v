@@ -1,0 +1,31 @@
+[dumpfile] "work/control.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-Control Unit Inputs
+@22
+control_unit_tb.opcode[6:0]
+control_unit_tb.funct3[2:0]
+control_unit_tb.funct7[6:0]
+@28
+control_unit_tb.zero
+control_unit_tb.finished
+@200
+-Control Unit Outputs
+@28
+control_unit_tb.pc_src
+control_unit_tb.reg_write
+control_unit_tb.mem_write
+control_unit_tb.alu_src
+@22
+control_unit_tb.result_src[1:0]
+control_unit_tb.alu_control[2:0]
+control_unit_tb.imm_src[1:0]
+@200
+-Internal Signals
+@28
+control_unit_tb.uut.branch
+control_unit_tb.uut.jump
+@22
+control_unit_tb.uut.alu_op[1:0]

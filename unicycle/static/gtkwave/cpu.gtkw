@@ -1,0 +1,47 @@
+[dumpfile] "work/cpu.vcd"
+[timestart] 0
+[size] 1200 800
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@200
+-Clock and Reset
+@28
+cpu_tb.clk
+cpu_tb.reset
+cpu_tb.finished
+@200
+-Program Counter and Instruction
+@22
+cpu_tb.debug_pc[31:0]
+cpu_tb.debug_instr[31:0]
+@200
+-Control Unit Signals
+@28
+cpu_tb.debug_reg_write
+cpu_tb.debug_mem_write
+cpu_tb.debug_alu_src
+cpu_tb.debug_pc_src
+@22
+cpu_tb.debug_alu_control[2:0]
+@200
+-ALU Operation (Doubling Loop)
+@22
+cpu_tb.debug_alu_src_a[31:0]
+cpu_tb.debug_alu_src_b[31:0]
+cpu_tb.debug_alu_result[31:0]
+@28
+cpu_tb.debug_zero
+@200
+-Register Write (Watch t0 Double)
+@22
+cpu_tb.debug_result[31:0]
+@200
+-Register File Interface
+@22
+cpu_tb.uut.regfile.a1[4:0]
+cpu_tb.uut.regfile.a2[4:0]
+cpu_tb.uut.regfile.a3[4:0]
+cpu_tb.uut.regfile.wd3[31:0]
+cpu_tb.uut.regfile.rd1[31:0]
+cpu_tb.uut.regfile.rd2[31:0]
+@28
+cpu_tb.uut.regfile.we3

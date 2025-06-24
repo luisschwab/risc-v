@@ -1,0 +1,11 @@
+[dumpfile] "work/pc.vcd"
+[timestart] 0
+[size] 1000 600
+*-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+@28
+pc_register_tb.clk
+pc_register_tb.reset
+pc_register_tb.finished
+@22
+pc_register_tb.pc_next[31:0]
+pc_register_tb.pc[31:0]
