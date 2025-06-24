@@ -2,7 +2,7 @@ _default:
     @just --list
 
 # Create work directory
-work:
+_work:
     mkdir -p work
 
 # Delete artifacts from work directory
@@ -10,7 +10,7 @@ clean:
     rm work/*
 
 # Test all components
-test-all: work
+test-all: _work
     @just test adder
     @just test alu
     @just test control
@@ -20,9 +20,10 @@ test-all: work
     @just test mux
     @just test pc
     @just test regfile
+    @just test cpu
 
-# Test individual components: mux, adder, pc, imem
-test component="component": work
+# Test individual components: cpu, adder, alu, control, dmem, imem, immext, mux, pc, regfile
+test component="component": _work
     @just _test-{{component}}
 
 _test-cpu:
@@ -84,7 +85,7 @@ _test-regfile:
     ghdl -e --std=08 --workdir=work register_file_tb
     ghdl -r --std=08 --workdir=work register_file_tb --vcd=work/regfile.vcd
 
-# Test and view waveforms for components: mux, adder, pc, imem, dmem, regfile (press CTRL+0 to adjust the zoom)
-wave component="component": work
+# Test and view waveforms for components: cpu, adder, alu, control, dmem, imem, immext, mux, pc, regfile (press CTRL+0 to adjust the zoom)
+wave component="component": _work
     @just test {{component}}
     gtkwave static/gtkwave/{{component}}.gtkw &
