@@ -8,15 +8,15 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-ENTITY immext IS
+ENTITY immediate_extender IS
     PORT (
         instr : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         imm_src : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
         imm_ext : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
-END ENTITY immext;
+END ENTITY immediate_extender;
 
-ARCHITECTURE behavioral OF immext IS
+ARCHITECTURE behavioral OF immediate_extender IS
 BEGIN
     imm_proc : PROCESS (instr, imm_src)
     BEGIN
@@ -54,7 +54,7 @@ ARCHITECTURE testbench OF immext_tb IS
     SIGNAL imm_ext : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL finished: BOOLEAN := false;
 
-    COMPONENT immext IS
+    COMPONENT immediate_extender IS
         PORT (
             instr   : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
             imm_src : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
@@ -63,7 +63,7 @@ ARCHITECTURE testbench OF immext_tb IS
     END COMPONENT;
 
 BEGIN
-    uut : immext
+    uut : immediate_extender
     PORT MAP(
         instr   => instr,
         imm_src => imm_src,
@@ -78,79 +78,79 @@ BEGIN
 
         -- I (positive immediate)
         instr <= x"00500093";  -- addi x1, x0, 5 (immediate = 5)
-        imm_src <= "00";       -- I-type
+        imm_src <= "00";       -- I
         WAIT FOR 10 ns;
-        REPORT "I (positive immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
+        REPORT "I (positive immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
         ASSERT imm_ext = x"00000005" REPORT "I (positive immediate) failed" SEVERITY error;
 
         -- S (positive immediate)
         instr <= x"00502223";  -- sw x5, 4(x0) (immediate = 4)
-        imm_src <= "01";       -- S-type
+        imm_src <= "01";       -- S
         WAIT FOR 10 ns;
-        REPORT "S (positive immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"00000004" REPORT "S-type positive failed!" SEVERITY error;
+        REPORT "S (positive immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"00000004" REPORT "S (positive immediate) failed" SEVERITY error;
 
         -- B (positive immediate)
         instr <= x"00500463";  -- beq x0, x5, 8 (immediate = 8)
-        imm_src <= "10";       -- B-type
+        imm_src <= "10";       -- B
         WAIT FOR 10 ns;
-        REPORT "B (positive immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"00000008" REPORT "B-type positive failed!" SEVERITY error;
+        REPORT "B (positive immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"00000008" REPORT "B (positive immediate) failed" SEVERITY error;
 
         -- J (negative immediate)
         instr <= x"FF9FF0EF";  -- jal x1, -8 (immediate = -8, opcode = 1101111)
-        imm_src <= "11";       -- J-type/U-type selector
+        imm_src <= "11";       -- J & U
         WAIT FOR 10 ns;
-        REPORT "J (negative immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"FFFFFFF8" REPORT "J-type negative failed!" SEVERITY error;
+        REPORT "J (negative immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"FFFFFFF8" REPORT "-- J (negative immediate) failed" SEVERITY error;
 
         -- J (jal / positive immediate)
         instr <= x"008000EF";  -- jal x1, 8 (immediate = 8, opcode = 1101111)
-        imm_src <= "11";       -- J-type/U-type selector
+        imm_src <= "11";       -- J & U
         WAIT FOR 10 ns;
-        REPORT "(jal / positive immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"00000008" REPORT "J-type positive failed!" SEVERITY error;
+        REPORT "(jal / positive immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"00000008" REPORT "J (jal / positive immediate) failed" SEVERITY error;
 
         -- U (lui / positive immediate)
-        instr <= x"123450B7";  -- lui x1, 0x12345 (immediate = 0x12345000, opcode = 0110111)
-        imm_src <= "11";       -- J-type/U-type selector
+        instr <= x"123450B7";  -- lui x1, 0x12345 (immediate = 0x12345000, opcode = 0x0B7 / 0110111)
+        imm_src <= "11";       -- J & U
         WAIT FOR 10 ns;
-        REPORT "U (lui / positive immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"12345000" REPORT "U-type LUI failed!" SEVERITY error;
+        REPORT "U (lui / positive immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"12345000" REPORT "U (lui / positive immediate) failed" SEVERITY error;
 
         -- U (auipc)
-        instr <= x"ABCDE097";  -- auipc x1, 0xABCDE (immediate = 0xABCDE000, opcode = 0010111)
-        imm_src <= "11";       -- J-type/U-type selector
+        instr <= x"ABCDE097";  -- auipc x1, 0xABCDE (immediate = 0xABCDE000, opcode = 0x097 / 0010111)
+        imm_src <= "11";       -- J & U
         WAIT FOR 10 ns;
-        REPORT "U (auipc) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"ABCDE000" REPORT "U-type AUIPC failed!" SEVERITY error;
+        REPORT "U (auipc) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"ABCDE000" REPORT "U (auipc) failed" SEVERITY error;
 
         -- I (negative immediate)
-        instr <= x"FFF00093";  -- addi x1, x0, -1 (immediate = -1)
-        imm_src <= "00";       -- I-type
+        instr <= x"FFF00093";  -- addi x1, x0, -1
+        imm_src <= "00";       -- I
         WAIT FOR 10 ns;
-        REPORT "I (negative immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"FFFFFFFF" REPORT "I-type negative failed!" SEVERITY error;
+        REPORT "I (negative immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"FFFFFFFF" REPORT "-- I (negative immediate) failed" SEVERITY error;
 
         -- S (negative immediate)
-        instr <= x"FE502E23";  -- sw x5, -4(x0) (immediate = -4)
-        imm_src <= "01";       -- S-type
+        instr <= x"FE502E23";  -- sw x5, -4(x0)
+        imm_src <= "01";       -- S
         WAIT FOR 10 ns;
-        REPORT "S (negative immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"FFFFFFFC" REPORT "S-type negative failed!" SEVERITY error;
+        REPORT "S (negative immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"FFFFFFFC" REPORT "S (negative immediate) failed" SEVERITY error;
 
         -- B (negative immediate)
-        instr <= x"FE500EE3";  -- beq x0, x5, -4 (immediate = -4)
-        imm_src <= "10";       -- B-type
+        instr <= x"FE500EE3";  -- beq x0, x5, -4
+        imm_src <= "10";       -- B
         WAIT FOR 10 ns;
-        REPORT "B (negative immediate) instr=0x" & to_hstring(instr) & " imm_ext=0x" & to_hstring(imm_ext);
-        ASSERT imm_ext = x"FFFFFFFC" REPORT "B-type negative failed!" SEVERITY error;
+        REPORT "B (negative immediate) Instr=0x" & to_hstring(instr) & " ImmExt=0x" & to_hstring(imm_ext);
+        ASSERT imm_ext = x"FFFFFFFC" REPORT "B (negative immediate) failed" SEVERITY error;
 
         -- Invalid `imm_src` (should output zero)
         instr <= x"12345678";
         imm_src <= "XX";       -- Invalid
         WAIT FOR 10 ns;
-        REPORT "Invalid imm_src: imm_src=XX imm_ext=0x" & to_hstring(imm_ext);
+        REPORT "Invalid Immediate Source: ImmSrc=XX ImmExt=0x" & to_hstring(imm_ext);
 
         finished <= true;
         WAIT;
