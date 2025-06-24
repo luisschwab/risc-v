@@ -11,21 +11,19 @@ clean:
 
 # Test all components
 test-all: work
-    @just test mux
     @just test adder
-    @just test pc
-    @just test imem
+    @just test alu
+    @just test control
     @just test dmem
+    @just test imem
+    @just test immext
+    @just test mux
+    @just test pc
     @just test regfile
 
 # Test individual components: mux, adder, pc, imem
 test component="component": work
     @just _test-{{component}}
-
-_test-mux:
-    ghdl -a --std=08 --workdir=work src/mux.vhd
-    ghdl -e --std=08 --workdir=work mux_tb
-    ghdl -r --std=08 --workdir=work mux_tb --vcd=work/mux.vcd
 
 _test-adder:
     ghdl -a --std=08 --workdir=work src/adder.vhd
@@ -47,11 +45,6 @@ _test-dmem:
     ghdl -e --std=08 --workdir=work data_memory_tb
     ghdl -r --std=08 --workdir=work data_memory_tb --vcd=work/dmem.vcd
 
-_test-mux:
-    ghdl -a --std=08 --workdir=work src/mux.vhd
-    ghdl -e --std=08 --workdir=work mux_tb
-    ghdl -r --std=08 --workdir=work mux_tb --vcd=work/mux.vcd
-
 _test-imem:
     ghdl -a --std=08 --workdir=work src/imem.vhd
     ghdl -e --std=08 --workdir=work instruction_memory_tb
@@ -62,6 +55,11 @@ _test-immext:
     ghdl -e --std=08 --workdir=work immext_tb
     ghdl -r --std=08 --workdir=work immext_tb --vcd=work/immext.vcd
 
+_test-mux:
+    ghdl -a --std=08 --workdir=work src/mux.vhd
+    ghdl -e --std=08 --workdir=work mux_tb
+    ghdl -r --std=08 --workdir=work mux_tb --vcd=work/mux.vcd
+
 _test-pc:
     ghdl -a --std=08 --workdir=work src/pc.vhd
     ghdl -e --std=08 --workdir=work pc_register_tb
@@ -71,16 +69,6 @@ _test-regfile:
     ghdl -a --std=08 --workdir=work src/regfile.vhd
     ghdl -e --std=08 --workdir=work register_file_tb
     ghdl -r --std=08 --workdir=work register_file_tb --vcd=work/regfile.vcd
-
-_test-alu:
-    ghdl -a --std=08 --workdir=work src/alu.vhd
-    ghdl -e --std=08 --workdir=work alu_tb
-    ghdl -r --std=08 --workdir=work alu_tb --vcd=work/alu.vcd
-
-_test-immext:
-    ghdl -a --std=08 --workdir=work src/immext.vhd
-    ghdl -e --std=08 --workdir=work immext_tb
-    ghdl -r --std=08 --workdir=work immext_tb --vcd=work/immext.vcd
 
 # Test and view waveforms for components: mux, adder, pc, imem, dmem, regfile (press CTRL+0 to adjust the zoom)
 wave component="component": work
