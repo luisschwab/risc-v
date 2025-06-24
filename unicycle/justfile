@@ -25,6 +25,20 @@ test-all: work
 test component="component": work
     @just _test-{{component}}
 
+_test-cpu:
+    ghdl -a --std=08 --workdir=work src/adder.vhd
+    ghdl -a --std=08 --workdir=work src/alu.vhd
+    ghdl -a --std=08 --workdir=work src/control.vhd
+    ghdl -a --std=08 --workdir=work src/dmem.vhd
+    ghdl -a --std=08 --workdir=work src/imem.vhd
+    ghdl -a --std=08 --workdir=work src/immext.vhd
+    ghdl -a --std=08 --workdir=work src/mux.vhd
+    ghdl -a --std=08 --workdir=work src/pc.vhd
+    ghdl -a --std=08 --workdir=work src/regfile.vhd
+    ghdl -a --std=08 --workdir=work src/cpu.vhd
+    ghdl -e --std=08 --workdir=work cpu_tb
+    ghdl -r --std=08 --workdir=work cpu_tb --vcd=work/cpu.vcd
+
 _test-adder:
     ghdl -a --std=08 --workdir=work src/adder.vhd
     ghdl -e --std=08 --workdir=work adder_tb
