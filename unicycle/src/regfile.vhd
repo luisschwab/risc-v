@@ -22,6 +22,7 @@ USE IEEE.NUMERIC_STD.ALL;
 ENTITY register_file IS
     PORT (
         clk : IN STD_LOGIC;
+        reset: IN STD_LOGIC;
         we3 : IN STD_LOGIC;
         a1  : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         a2  : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -39,9 +40,21 @@ ARCHITECTURE behavioral OF register_file IS
 BEGIN
     write_proc : PROCESS (clk)
     BEGIN
-        IF rising_edge(clk) THEN
+        IF reset = '1' THEN
+            -- Zero out all registers
+            FOR i IN 0 TO 31 LOOP
+                registers(i) <= (OTHERS => '0');
+            END LOOP;
+
+            -- Initialize RISC-V ABI registers
+            -- Stack Pointer (x2): 0x100103FC
+            registers(2) <= x"100103FC";
+            -- Global Pointer (x3): 0x10010000
+            registers(3) <= x"10010000";
+
+        ELSIF rising_edge(clk) THEN
             IF we3 = '1' THEN
-                -- Register x0 is hardwired to zero in RISC-V
+                -- Register x0 is hardwired to 0 in RISC-V
                 IF TO_INTEGER(UNSIGNED(a3)) /= 0 THEN
                     registers(TO_INTEGER(UNSIGNED(a3))) <= wd3;
                 END IF;
@@ -68,6 +81,7 @@ END ENTITY register_file_tb;
 
 ARCHITECTURE testbench OF register_file_tb IS
     SIGNAL clk : STD_LOGIC := '0';
+    SIGNAL reset : STD_LOGIC := '0';
     SIGNAL we3 : STD_LOGIC;
     SIGNAL a1  : STD_LOGIC_VECTOR(4 DOWNTO 0);
     SIGNAL a2  : STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -80,6 +94,7 @@ ARCHITECTURE testbench OF register_file_tb IS
     COMPONENT register_file IS
         PORT (
             clk : IN STD_LOGIC;
+            reset : IN STD_LOGIC;
             we3 : IN STD_LOGIC;
             a1  : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
             a2  : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -96,6 +111,7 @@ BEGIN
     uut : register_file
     PORT MAP(
         clk => clk,
+        reset => reset,
         we3 => we3,
         a1  => a1,
         a2  => a2,
@@ -113,7 +129,18 @@ BEGIN
         a2 <= (OTHERS => '0');
         a3 <= (OTHERS => '0');
 
+        reset <= '1';
         WAIT FOR 20 ns;
+        reset <= '0';
+        WAIT FOR 20 ns;
+
+        a1 <= "00010"; -- x2 (sp)
+        a2 <= "00011"; -- x3 (gp)
+        WAIT FOR 1 ns;
+        REPORT "After reset - SP (x2): 0x" & to_hstring(rd1);
+        REPORT "After reset - GP (x3): 0x" & to_hstring(rd2);
+        ASSERT rd1 = x"100103FC" REPORT "SP not initialized correctly!" SEVERITY error;
+        ASSERT rd2 = x"10010000" REPORT "GP not initialized correctly!" SEVERITY error;
 
         -- x0 is always 0x00000000
         a1 <= "00000";

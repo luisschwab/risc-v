@@ -34,6 +34,8 @@ END ENTITY data_memory;
 ARCHITECTURE behavioral OF data_memory IS
     TYPE memory_array IS ARRAY (0 TO 2 ** ADDR_WIDTH - 1) OF STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
 
+    CONSTANT BASE_ADDR : UNSIGNED(31 DOWNTO 0) := x"10010000";
+
     -- Helper function that parses a `.data` MIF file into the Data Memory.
     IMPURE FUNCTION load_memory RETURN memory_array IS
         VARIABLE temp_memory : memory_array;
@@ -102,15 +104,22 @@ ARCHITECTURE behavioral OF data_memory IS
 BEGIN
     ram_proc : PROCESS (clk)
         VARIABLE word_addr : INTEGER;
+        VARIABLE offset_addr : UNSIGNED(31 DOWNTO 0);
     BEGIN
         IF rising_edge(clk) THEN
-            word_addr := TO_INTEGER(UNSIGNED(addr(ADDR_WIDTH + 1 DOWNTO 2)));
+            offset_addr := UNSIGNED(addr) - BASE_ADDR;
+
+            word_addr := TO_INTEGER(UNSIGNED(offset_addr(ADDR_WIDTH + 1 DOWNTO 2)));
 
             IF wr_en = '1' AND word_addr < 2 ** ADDR_WIDTH THEN
                 memory(word_addr) <= wr_data;
             END IF;
 
-            read_address <= addr(ADDR_WIDTH + 1 DOWNTO 2);
+            IF word_addr >= 0 AND word_addr < 2 ** ADDR_WIDTH THEN
+                read_address <= STD_LOGIC_VECTOR(TO_UNSIGNED(word_addr, ADDR_WIDTH));
+            ELSE
+                read_address <= (OTHERS => '0');
+            END IF;
         END IF;
     END PROCESS;
 
