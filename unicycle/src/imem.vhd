@@ -1,3 +1,13 @@
+-- Instruction Memory
+--
+-- The Instruction Memory is the ROM of the CPU, responsible for storing the `.text` segment: the program itself.
+--
+-- Instruction Memory:
+--   Inputs:
+--     A (32 bits) => the address to be read from.
+--   Outputs:
+--     RD (32 bits) => the data written at address `A`.
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
@@ -41,7 +51,6 @@ BEGIN
                 readline(mem_file, line_buffer);
                 line_count := line_count + 1;
 
-                -- Parse hex text
                 IF line_buffer'length >= 8 THEN
                     data_val := (OTHERS => '0');
                     FOR i IN 1 TO 8 LOOP
@@ -123,7 +132,6 @@ ARCHITECTURE testbench OF instruction_memory_tb IS
 
     TYPE INTEGER_ARRAY IS ARRAY (NATURAL RANGE <>) OF INTEGER;
 
-    -- Decode instructions for testbench output
     FUNCTION decode_instruction(instr : STD_LOGIC_VECTOR(31 DOWNTO 0)) RETURN STRING IS
         VARIABLE opcode : STD_LOGIC_VECTOR(6 DOWNTO 0);
     BEGIN
@@ -146,7 +154,7 @@ ARCHITECTURE testbench OF instruction_memory_tb IS
         GENERIC (
             ADDR_WIDTH : INTEGER := 14;
             DATA_WIDTH : INTEGER := 32;
-            MIF_FILE : STRING := "static/mif/de1_text.mif"
+            MIF_FILE : STRING := "static/mif/text.mif"
         );
         PORT (
             addr : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -183,6 +191,7 @@ BEGIN
                     ": " & to_bstring(rd) & " (" & decode_instruction(rd) & ")";
             END IF;
         END LOOP;
+        REPORT "Finished reading .text segment";
 
         finished <= true;
         WAIT;

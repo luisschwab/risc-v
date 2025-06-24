@@ -1,3 +1,16 @@
+-- Data Memory
+--
+-- The Data Memory is the RAM of the CPU, responsible for storing the `.data` segment: variables, the heap and the stack.
+--
+-- Data Memory:
+--   Inputs:
+--     CLK (1 bit) => clock signal for synchronization.
+--     A (32 bits) => the address data must be written to or read from.
+--     WD (32 bits) => the data that must be written to address `A`.
+--     WE (1 bit) => wheter to enable writing data to it.
+--   Outputs:
+--     RD (32 bits) => the data currently written at address `A`.
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
@@ -21,6 +34,7 @@ END ENTITY data_memory;
 ARCHITECTURE behavioral OF data_memory IS
     TYPE memory_array IS ARRAY (0 TO 2 ** ADDR_WIDTH - 1) OF STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
 
+    -- Helper function that parses a `.data` MIF file into the Data Memory.
     IMPURE FUNCTION load_memory RETURN memory_array IS
         VARIABLE temp_memory : memory_array;
         FILE mem_file : TEXT;
@@ -161,8 +175,8 @@ BEGIN
 
         WAIT FOR 50 ns;
 
-        -- Initial state of data.mif
-        FOR i IN 0 TO 15 LOOP
+        -- Initial state of `data.mif`
+        FOR i IN 0 TO (2 ** 10) LOOP
             addr <= STD_LOGIC_VECTOR(TO_UNSIGNED(i * 4, 32));
             WAIT UNTIL rising_edge(clk);
             WAIT FOR 1 ns;

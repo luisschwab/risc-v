@@ -1,3 +1,14 @@
+-- Program Counter Register
+--
+-- The Program Counter stores the address of the instruction to be executed. On the rising edge of the clock signal, PC = PCNext.
+--
+-- Program Counter Register:
+--   Inputs:
+--     CLK (1 bit) => clock signal for synchronization.
+--     PCNext (32 bits) => the address of the next instruction to be executed.
+--   Outputs:
+--     PC (32 bits) => the address of the current instruction to be executed.
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
@@ -70,7 +81,6 @@ BEGIN
 
     stimulus : PROCESS
     BEGIN
-        REPORT "Testing PC register reset";
         reset <= '1';
         pc_next <= x"12345678";
         WAIT FOR 10 ns;
@@ -79,8 +89,6 @@ BEGIN
         reset <= '0';
         WAIT FOR 1 ns;
         ASSERT pc = x"00000000" REPORT "PC changed immediately after reset release" SEVERITY error;
-
-        REPORT "Testing PC register updates";
 
         pc_next <= x"00000004";
         WAIT UNTIL rising_edge(clk);
@@ -97,7 +105,6 @@ BEGIN
         WAIT FOR 1 ns;
         ASSERT pc = x"00000100" REPORT "PC update 3 failed" SEVERITY error;
 
-        REPORT "Testing reset during operation";
         reset <= '1';
         WAIT FOR 5 ns;
         ASSERT pc = x"00000000" REPORT "PC reset during operation failed" SEVERITY error;

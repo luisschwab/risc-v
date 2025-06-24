@@ -1,3 +1,20 @@
+-- Register File
+--
+-- 32 32-bit registers, used to fast temporary data storage.
+-- Loading and storing to a register is much faster than loading and storing to Data Memory (same-cycle acess).
+--
+-- Register File:
+--   Inputs:
+--     CLK (1 bit) => clock signal for synchronization.
+--     A1 (5 bits) => encodes the register to read from.
+--     A2 (5 bits) => encodes the register to read from.
+--     A3 (5 bits) => encodes the register to write to.
+--     WD3 (32 bits) => data to write to the register encoded by `A3`.
+--     WE3 (1 bit) => enabler for writing `WD3` to `A3`.
+--   Outputs:
+--     RD1 (32 bits) => the data currently written at address `A1`.
+--     RD2 (32 bits) => the data currently written at address `A2`.
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;

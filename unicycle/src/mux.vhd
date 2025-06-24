@@ -1,3 +1,7 @@
+-- Multiplexers
+--
+-- Basic 2-input and 4-input multiplexers, used for signal selection.
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;

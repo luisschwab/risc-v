@@ -1,3 +1,7 @@
+-- Adder
+--
+-- Simple generic width adder without overflow and underflow detection.
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
@@ -59,45 +63,40 @@ BEGIN
 
     stimulus : PROCESS
     BEGIN
-        REPORT "Testing 32-bit adder";
-
-        a_32 <= x"00000005"; -- 5
-        b_32 <= x"00000003"; -- 3
+        a_32 <= x"00000005";
+        b_32 <= x"00000003";
         WAIT FOR 10 ns;
-        ASSERT result_32 = x"00000008" REPORT "32-bit: 5+3 failed" SEVERITY error;
+        ASSERT result_32 = x"00000008" REPORT "adder32: 5+3 failed" SEVERITY error;
 
         a_32 <= x"00000100";
         b_32 <= x"00000004";
         WAIT FOR 10 ns;
-        ASSERT result_32 = x"00000104" REPORT "32-bit: PC+4 failed" SEVERITY error;
+        ASSERT result_32 = x"00000104" REPORT "adder32: PC+4 failed" SEVERITY error;
 
         a_32 <= x"00000100";
         b_32 <= x"00000010";
         WAIT FOR 10 ns;
-        ASSERT result_32 = x"00000110" REPORT "32-bit: branch target failed" SEVERITY error;
+        ASSERT result_32 = x"00000110" REPORT "adder32: branch target failed" SEVERITY error;
 
         a_32 <= x"12345678";
         b_32 <= x"87654321";
         WAIT FOR 10 ns;
-        ASSERT result_32 = x"99999999" REPORT "32-bit: large addition failed" SEVERITY error;
+        ASSERT result_32 = x"99999999" REPORT "adder32: large addition failed" SEVERITY error;
 
         a_32 <= x"FFFFFFFF";
         b_32 <= x"00000001";
         WAIT FOR 10 ns;
-        ASSERT result_32 = x"00000000" REPORT "32-bit: overflow wrap failed" SEVERITY error;
-
-
-        REPORT "Testing 8-bit adder";
+        ASSERT result_32 = x"00000000" REPORT "adder32: overflow wrap failed" SEVERITY error;
 
         a_8 <= x"0F";
         b_8 <= x"01";
         WAIT FOR 10 ns;
-        ASSERT result_8 = x"10" REPORT "8-bit: 15+1 failed" SEVERITY error;
+        ASSERT result_8 = x"10" REPORT "adder8: 15+1 failed" SEVERITY error;
 
         a_8 <= x"FF";
         b_8 <= x"01";
         WAIT FOR 10 ns;
-        ASSERT result_8 = x"00" REPORT "8-bit: overflow wrap failed" SEVERITY error;
+        ASSERT result_8 = x"00" REPORT "adder8: overflow wrap failed" SEVERITY error;
 
         WAIT;
     END PROCESS stimulus;
