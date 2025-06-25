@@ -84,7 +84,7 @@ A computer architecture is defined by its Architectural State (**AS**) and Instr
 
 The [`Program Counter`](#program-counter-register), [`Register File`](#register-file) and [`Data Memory`](#data-memory) are read _combinationally_: if the address changes, the new data appears after some propagation delay, but they are only written to on the rising edge of CLK. In this way, a processor can be viwed as a [Finite State Machine](https://en.wikipedia.org/wiki/Finite-state_machine).
 
-The Unicycle architecture executes a single instruction per cycle, so has no need for _non-architectural_ state, but the cycle time is limited by the slowest instruction, and also needs to have separate instruction and data memory. As such, the lower bound for cycle time is defined by the slowest operation possible. This makes for a simple yet inneficient CPU.
+The Unicycle CPU executes a single instruction per cycle, so has no need for _non-architectural_ state, but the cycle period floor lower-bounded by the slowest possible instruction. It also needs to have separate instruction and data memories.
 
 ## Design Process
 

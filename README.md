@@ -1,8 +1,8 @@
 # risc-v
 
-This repository contains [VHDL](https://en.wikipedia.org/wiki/VHDL) implementations of three CPU architectures using the [RV32I ISA](https://riscv-software-src.github.io/riscv-unified-db/manual/html/isa/isa_20240411/chapters/rv32.html): [`Unicycle`](/unicycle), [`Multicycle`](/multicycle) and [`Pipeline`](/pipeline).
+This repository contains [VHDL](https://en.wikipedia.org/wiki/VHDL) implementations of three CPU execution models using the [RV32I ISA](https://riscv-software-src.github.io/riscv-unified-db/manual/html/isa/isa_20240411/chapters/rv32.html): [`Unicycle`](/unicycle), [`Multicycle`](/multicycle) and [`Pipeline`](/pipeline).
 
-This README will focus on basic RISC-V and RV32I concepts, while the READMEs on the implementation folders will dive deeper on each particular CPU architecture, implementation details and show how to run each one.
+This README will focus on basic RISC-V and RV32I concepts, while the READMEs on the implementation folders will dive deeper on each particular CPU's execution model implementation details.
 
 This work is part of the Computer Architecture and Organization (CIC0099) course for my Computer Engineering undergrad at Universidade de Brasília.
 
