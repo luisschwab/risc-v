@@ -14,6 +14,7 @@
 --     ResultSrc (2 bits) => selector for the multiplexer that sources data to be written to the Register File (ALUResult OR Data Memory OR PCPlus4).
 --     MemWrite (1 bit) => enabler for writing to the Data Memory.
 --     ALUControl (3 bits) => selector for the operation the ALU must perform (add OR sub OR and OR xor OR slt OR sll OR srl).
+--     ALUSrc (1 bit) => selector for the ALUSrcB multiplexer (ImmExt or RD2)
 --     ImmSrc (2 bits) => selector for the Immediate Extension operation conditional on instruction type (I OR S OR B OR (J & U)).
 --     RegWrite (1 bit) => enabler for writing to the Register File.
 

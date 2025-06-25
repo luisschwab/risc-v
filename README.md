@@ -14,9 +14,11 @@ _RISC_ stands for _Reduced Instruction Set Computer_, which means that the set o
 
 _RISC-V's_ ISA is modular and is composed of _1-of-N_ possible bases ([RVWMO](https://danielmangum.com/risc-v-tips/2022-01-05-rvwmo/) + RV32I | RV32E | RV64I | RV64E | RV128I) plus [optional extensions](https://www.cnx-software.com/2019/08/27/risc-v-bases-and-extensions-explained/#risc-v-extensions) (M, A, F, D, G, Q, L, C, B, T, P, V, Zk, H, S, etc.).
 
-32-bit _RISC-V_ instructions (RV32I and RV32E) follow this pattern:
+32-bit _RISC-V_ instructions (RV32I and RV32E) follow this encoding pattern:
 
-![RV32 instruction format](/static/rv32-instructions.png)
+<p align="center">
+    <img src="static/image/riscv-instruction-encoding.png" width="80%">
+</p>
 
 _RISC-V's_ ISA follows the _load-store_ (also called _register-register_) architecture: only load and store instructions can access memory, while other operations must use data that is already in registers. You can't perform addition between two memory addresses, for example. Below is a diagram of the steps needed to add two words saved on RAM and then save the result on RAM:
 
@@ -38,6 +40,15 @@ sequenceDiagram
     Registers-->>RAM: r3: 0x11
 ```
 
+### Instruction Cycle
+
+The instruction cycle is composed of 4 steps:
+
+1. **Fetch**: get the next instruction from the `text` segment of memory. The PC holds the address for the instruction, stored in the Instruction Memory.
+2. **Decode**: the Control Unit interprets the instruction and sends control signals to the ALU, Multiplexers, Immediate Extender, Data Memory and Register File.
+3. **Execute**: The actual execution of the instruction. Data is read from registers, ALU operations are performed, the Program Counter is updated and results are written to registers.
+4. **Repeat**.
+
 ### Register Sets
 
 RV32I has 32 registers with an additional 32 if a floating point extension is enabled. The first register, x0 (zero) is a zero register, which means that loads from it are always 0 and stores have no effect. This makes for a simpler instruction set because it eliminates the need for special instruction formats and reduces the total number of instruction variants required.
@@ -46,46 +57,26 @@ With _x0_ available as a constant zero source, many common operations can be exp
 
 Below are the registers and their use cases:
 
-| Register | ABI Name | Description | Saved by |
-|----------|----------|-------------|----------|
+| Register Range | ABI Names | Description | Saved by |
+|----------------|-----------|-------------|----------|
 | x0 | zero | Always zero | N/A |
 | x1 | ra | Return address | Caller |
 | x2 | sp | Stack pointer | Callee |
 | x3 | gp | Global pointer | N/A |
 | x4 | tp | Thread pointer | N/A |
-| x5 | t0 | Temporary / alternate return address | Caller |
-| x6 | t1 | Temporary | Caller |
-| x7 | t2 | Temporary | Caller |
-| x8 | s0/fp | Saved register / frame pointer | Callee |
-| x9 | s1 | Saved register | Callee |
-| x10 | a0 | Function argument 0 / return value | Caller |
-| x11 | a1 | Function argument 1 / return value | Caller |
-| x12 | a2 | Function argument 2 | Caller |
-| x13 | a3 | Function argument 3 | Caller |
-| x14 | a4 | Function argument 4 | Caller |
-| x15 | a5 | Function argument 5 | Caller |
-| x16 | a6 | Function argument 6 | Caller |
-| x17 | a7 | Function argument 7 / syscall | Caller |
-| x18 | s2 | Saved register | Callee |
-| x19 | s3 | Saved register | Callee |
-| x20 | s4 | Saved register | Callee |
-| x21 | s5 | Saved register | Callee |
-| x22 | s6 | Saved register | Callee |
-| x23 | s7 | Saved register | Callee |
-| x24 | s8 | Saved register | Callee |
-| x25 | s9 | Saved register | Callee |
-| x26 | s10 | Saved register | Callee |
-| x27 | s11 | Saved register | Callee |
-| x28 | t3 | Temporary | Caller |
-| x29 | t4 | Temporary | Caller |
-| x30 | t5 | Temporary | Caller |
-| x31 | t6 | Temporary | Caller |
+| x5-x7 | t0-t2 | Temporaries | Caller |
+| x8-x9 | s0/fp, s1 | Saved registers (s0 = frame pointer) | Callee |
+| x10-x17 | a0-a7 | Function arguments/return values | Caller |
+| x18-x27 | s2-s11 | Saved registers | Callee |
+| x28-x31 | t3-t6 | Temporaries | Caller |
 
 ### Memory Access
 
 As mentioned above, _RISC-V_ is a load-store architecture. Most load-store instructions include a 12-bit offset (also called _Immediate_) and two register identifiers. One is the base register, the other is a destination register (for loads) or a source register (for a store). Instructions are in LE. _RISC-V_ lacks address-modes that write back to the registers (it does not auto-increment, for example).
 
 _RISC-V_ manages memory systems that are shared between CPUs or threads by ensuring a thread of execution always sees its memory operations in the programmed order. But between threads and I/O devices, _RISC-V_ is simplified: it doesn't guarantee the order of memory operations, except by specific instructions, such as `fence`.
+
+_RISC-V_ uses the [_Harvard Architecture_](https://en.wikipedia.org/wiki/Harvard_architecture)—separate data and instruction memories—to allow same-cycle access to both data and instruction, while _x86_ and _ARM_ uses the [_Von Neumann Architecture_](https://en.wikipedia.org/wiki/Von_Neumann_architecture)—2 cycles to access instruction and information. _Harvard_ is better for pipelining due to dual memory access, more secure and deterministic, has higher implementation cost due to needing more hardware and does not scale very well. _Von Neumann_ is simpler, allows dynamic memory allocation and dynamic linking, but needs more cycles. It is also vulnerable to code injection attacks, which happens when data is executed as code, and also buffer overflow attacks ([_Smashing The Stack For Fun And Profit_](https://phrack.org/issues/49/14) is a great read on this).
 
 ### Immediates
 
@@ -95,6 +86,12 @@ lui  x1, 0x12345    # load 0x12345 into the upper 20 bits of x1
 addi x1, x1, 0x678  # add 0x678 into the lower 12 bits of x1
 ```
 This is unecessary for values that fit in 12 bits, however.
+
+This is how immediates are extended into 32 bits for the different instruction types:
+
+<p align="center">
+    <img src="static/image/riscv-immediate-extender.png" width="80%">
+</p>
 
 ### Subroutine Calls, Jumps and Branches
 
@@ -231,7 +228,7 @@ These tables list (most?) _RV32I's_ instructions and pseudo-instructions:
 
 This table has the codes that must be used when making syscalls via `ecall`:
 
-> These syscall codes only are good for [RARS](https://github.com/TheThirdOne/rars/releases/tag/v1.6), real OSes have other codes.
+> These syscall codes only are good for [RARS](https://github.com/TheThirdOne/rars/), real OSes have other codes.
 
 | Code | syscall | Arguments | Return | Description |
 |------|---------|-----------|--------|-------------|

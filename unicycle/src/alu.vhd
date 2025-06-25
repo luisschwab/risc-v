@@ -6,7 +6,7 @@
 --   Inputs:
 --     SrcA (32 bits) => first operand
 --     SrcB (32 bits) => second operand
---     ALUControl (3 bits) => defines the operation to be performed
+--     ALUControl (3 bits) => operator
 --   Outputs:
 --     ALUResult (32 bits) => the result of the operation
 --     Zero (1 bit) => whether the operation resulted in zero, used for branching (beq, bne, blt, bge)
