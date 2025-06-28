@@ -1,6 +1,6 @@
 # RISC-V Unicycle Processor
 
-This project implements the Unicycle (referred as Single Cycle) Processor from _Digital Design and Computer Architecture: RISC-V Edition_ from Chapter 7.3.
+This project implements the Unicycle (referred as Single Cycle) Processor from [_Digital Design and Computer Architecture: RISC-V Edition_](../static/digital-design-computer-architecture-riscv.pdf) from Chapter 7.3.
 
 <p align="center">
   <img src="static/image/unicycle.png" width="80%">
