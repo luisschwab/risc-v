@@ -1,0 +1,28 @@
+_default:
+    @just --list
+
+# Create work directory
+_work:
+    mkdir -p work
+
+# Delete artifacts from work directory
+clean:
+    rm work/*
+
+# Test all components
+test-all: _work
+    @just test adder
+
+_test-adder:
+    ghdl -a --std=08 --workdir=work src/adder.vhd
+    ghdl -e --std=08 --workdir=work adder_tb
+    ghdl -r --std=08 --workdir=work adder_tb --vcd=work/adder.vcd
+
+# Test individual components:
+test component="component": _work
+    @just _test-{{component}}
+
+# Test and view waveforms for components:
+wave component="component": _work
+    @just test {{component}}
+    gtkwave static/gtkwave/{{component}}.gtkw &
