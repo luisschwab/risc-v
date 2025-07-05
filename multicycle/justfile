@@ -16,6 +16,7 @@ test-all: _work
     @just test mux
     @just test immext
     @just test pc
+    @just test regfile
 
 _test-adder:
     ghdl -a --std=08 --workdir=work src/adder.vhd
@@ -41,6 +42,11 @@ _test-pc:
     ghdl -a --std=08 --workdir=work src/pc.vhd
     ghdl -e --std=08 --workdir=work pc_tb
     ghdl -r --std=08 --workdir=work pc_tb --vcd=work/pc.vcd
+
+_test-regfile:
+    ghdl -a --std=08 --workdir=work src/regfile.vhd
+    ghdl -e --std=08 --workdir=work register_file_tb
+    ghdl -r --std=08 --workdir=work register_file_tb --vcd=work/regfile.vcd
 
 # Test individual components:
 test component="component": _work
