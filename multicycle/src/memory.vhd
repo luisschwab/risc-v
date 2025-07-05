@@ -328,8 +328,6 @@ BEGIN
         REPORT "Persist test: first write is still " & to_hstring(rd_data);
         ASSERT rd_data = x"DEADBEEF" REPORT "Data not persistent!" SEVERITY error;
 
-        REPORT "Finished testing unified memory";
-
         finished <= true;
         WAIT;
     END PROCESS;
