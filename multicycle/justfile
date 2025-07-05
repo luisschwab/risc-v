@@ -24,6 +24,11 @@ _test-alu:
     ghdl -e --std=08 --workdir=work alu_tb
     ghdl -r --std=08 --workdir=work alu_tb --vcd=work/alu.vcd
 
+_test-mux:
+    ghdl -a --std=08 --workdir=work src/mux.vhd
+    ghdl -e --std=08 --workdir=work mux_tb
+    ghdl -r --std=08 --workdir=work mux_tb --vcd=work/mux.vcd
+
 # Test individual components:
 test component="component": _work
     @just _test-{{component}}
