@@ -13,6 +13,9 @@ clean:
 test-all: _work
     @just test adder
     @just test alu
+    @just test mux
+    @just test immext
+    @just test pc
 
 _test-adder:
     ghdl -a --std=08 --workdir=work src/adder.vhd
@@ -33,6 +36,11 @@ _test-immext:
     ghdl -a --std=08 --workdir=work src/immext.vhd
     ghdl -e --std=08 --workdir=work immext_tb
     ghdl -r --std=08 --workdir=work immext_tb --vcd=work/immext.vcd
+
+_test-pc:
+    ghdl -a --std=08 --workdir=work src/pc.vhd
+    ghdl -e --std=08 --workdir=work pc_tb
+    ghdl -r --std=08 --workdir=work pc_tb --vcd=work/pc.vcd
 
 # Test individual components:
 test component="component": _work
