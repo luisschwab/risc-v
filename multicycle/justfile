@@ -17,6 +17,7 @@ test-all: _work
     @just test immext
     @just test pc
     @just test regfile
+    @just test memory
 
 _test-adder:
     ghdl -a --std=08 --workdir=work src/adder.vhd
@@ -47,6 +48,11 @@ _test-regfile:
     ghdl -a --std=08 --workdir=work src/regfile.vhd
     ghdl -e --std=08 --workdir=work register_file_tb
     ghdl -r --std=08 --workdir=work register_file_tb --vcd=work/regfile.vcd
+
+_test-memory:
+    ghdl -a --std=08 --workdir=work src/memory.vhd
+    ghdl -e --std=08 --workdir=work memory_tb
+    ghdl -r --std=08 --workdir=work memory_tb --vcd=work/memory.vcd
 
 # Test individual components:
 test component="component": _work
