@@ -12,11 +12,17 @@ clean:
 # Test all components
 test-all: _work
     @just test adder
+    @just test alu
 
 _test-adder:
     ghdl -a --std=08 --workdir=work src/adder.vhd
     ghdl -e --std=08 --workdir=work adder_tb
     ghdl -r --std=08 --workdir=work adder_tb --vcd=work/adder.vcd
+
+_test-alu:
+    ghdl -a --std=08 --workdir=work src/alu.vhd
+    ghdl -e --std=08 --workdir=work alu_tb
+    ghdl -r --std=08 --workdir=work alu_tb --vcd=work/alu.vcd
 
 # Test individual components:
 test component="component": _work
