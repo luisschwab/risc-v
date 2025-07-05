@@ -29,6 +29,11 @@ _test-mux:
     ghdl -e --std=08 --workdir=work mux_tb
     ghdl -r --std=08 --workdir=work mux_tb --vcd=work/mux.vcd
 
+_test-immext:
+    ghdl -a --std=08 --workdir=work src/immext.vhd
+    ghdl -e --std=08 --workdir=work immext_tb
+    ghdl -r --std=08 --workdir=work immext_tb --vcd=work/immext.vcd
+
 # Test individual components:
 test component="component": _work
     @just _test-{{component}}
