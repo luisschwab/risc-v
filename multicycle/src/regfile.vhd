@@ -54,7 +54,7 @@ BEGIN
 
         ELSIF rising_edge(clk) THEN
             IF we3 = '1' THEN
-                -- Register x0 is hardwired to 0 in RISC-V
+                -- Register x0 is immutably hardwired to 0 in RISC-V
                 IF TO_INTEGER(UNSIGNED(a3)) /= 0 THEN
                     registers(TO_INTEGER(UNSIGNED(a3))) <= wd3;
                 END IF;

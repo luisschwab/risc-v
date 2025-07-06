@@ -5,7 +5,7 @@
 --
 -- To implement the FSM, we simply need a register to hold the current state; the state itself
 -- is represented by an enum with all possible states. Then we do a simple switch-case statement
--- that implements the diagram from the README.
+-- that implements the diagram from the README. States are transitioned based on the current state and CPU signals.
 --
 -- Control Unit:
 --   Inputs:
