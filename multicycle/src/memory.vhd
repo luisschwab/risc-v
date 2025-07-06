@@ -1,7 +1,7 @@
 -- Memory
 --
 -- The Multicycle architecture uses a unified memory for both `data` and `text` segments,
--- since access to these regions are made on different cycles. This is cheaper and less
+-- since access to these regions ia made on different cycles. This is cheaper and less
 -- complex than the Unicycle approach with separate memories for each segment.
 --
 -- Unified Memory:
@@ -41,7 +41,7 @@ ARCHITECTURE behavioral OF memory IS
     CONSTANT TEXT_BASE_ADDR : UNSIGNED(31 DOWNTO 0) := x"00000000";
     CONSTANT DATA_BASE_ADDR : UNSIGNED(31 DOWNTO 0) := x"10010000";
 
-    -- Helper function that parses a `.text` MIF file into the Text Memory.
+    -- Helper function that parses a `.text` MIF file into the TEXT address space.
     IMPURE FUNCTION load_text_memory RETURN memory_array IS
         VARIABLE temp_memory : memory_array;
         FILE mem_file : TEXT;
@@ -92,7 +92,7 @@ ARCHITECTURE behavioral OF memory IS
         RETURN temp_memory;
     END FUNCTION;
 
-    -- Helper function that parses a `.data` MIF file into the Data Memory.
+    -- Helper function that parses a `.data` MIF file into the DATA address space.
     IMPURE FUNCTION load_data_memory RETURN memory_array IS
         VARIABLE temp_memory : memory_array;
         FILE mem_file : TEXT;
@@ -156,46 +156,60 @@ ARCHITECTURE behavioral OF memory IS
 
     SIGNAL text_memory : memory_array := load_text_memory;
     SIGNAL data_memory : memory_array := load_data_memory;
+    SIGNAL is_data_region : STD_LOGIC := '0';
     SIGNAL read_address : STD_LOGIC_VECTOR(ADDR_WIDTH - 1 DOWNTO 0) := (OTHERS => '0');
 
 BEGIN
-    ram_proc : PROCESS (clk)
+    addr_decode_proc : PROCESS (addr)
+        VARIABLE word_addr : INTEGER;
+        VARIABLE offset_addr : UNSIGNED(31 DOWNTO 0);
+        VARIABLE addr_unsigned : UNSIGNED(31 DOWNTO 0);
+    BEGIN
+        addr_unsigned := UNSIGNED(addr);
+
+        -- `data` region
+        IF addr_unsigned >= DATA_BASE_ADDR THEN
+            is_data_region <= '1';
+            offset_addr := addr_unsigned - DATA_BASE_ADDR;
+            word_addr := TO_INTEGER(offset_addr(ADDR_WIDTH + 1 DOWNTO 2));
+
+            IF word_addr >= 0 AND word_addr < 2 ** ADDR_WIDTH THEN
+                read_address <= STD_LOGIC_VECTOR(TO_UNSIGNED(word_addr, ADDR_WIDTH));
+            ELSE
+                read_address <= (OTHERS => '0');
+            END IF;
+        ELSE -- `text` region
+            is_data_region <= '0';
+            word_addr := TO_INTEGER(addr_unsigned(ADDR_WIDTH + 1 DOWNTO 2));
+            IF word_addr >= 0 AND word_addr < 2 ** ADDR_WIDTH THEN
+                read_address <= STD_LOGIC_VECTOR(TO_UNSIGNED(word_addr, ADDR_WIDTH));
+            ELSE
+                read_address <= (OTHERS => '0');
+            END IF;
+        END IF;
+    END PROCESS;
+
+    -- Write process (clocked)
+    write_proc : PROCESS (clk)
         VARIABLE word_addr : INTEGER;
         VARIABLE offset_addr : UNSIGNED(31 DOWNTO 0);
         VARIABLE addr_unsigned : UNSIGNED(31 DOWNTO 0);
     BEGIN
         IF rising_edge(clk) THEN
             addr_unsigned := UNSIGNED(addr);
-
-            -- Handle data memory region
-            IF addr_unsigned >= DATA_BASE_ADDR THEN
+            IF addr_unsigned >= DATA_BASE_ADDR AND wr_en = '1' THEN
                 offset_addr := addr_unsigned - DATA_BASE_ADDR;
                 word_addr := TO_INTEGER(offset_addr(ADDR_WIDTH + 1 DOWNTO 2));
-
-                IF wr_en = '1' AND word_addr < 2 ** ADDR_WIDTH THEN
+                IF word_addr < 2 ** ADDR_WIDTH THEN
                     data_memory(word_addr) <= wr_data;
-                END IF;
-
-                IF word_addr >= 0 AND word_addr < 2 ** ADDR_WIDTH THEN
-                    read_address <= STD_LOGIC_VECTOR(TO_UNSIGNED(word_addr, ADDR_WIDTH));
-                ELSE
-                    read_address <= (OTHERS => '0');
-                END IF;
-            ELSE
-                -- Handle text memory region
-                word_addr := TO_INTEGER(addr_unsigned(ADDR_WIDTH + 1 DOWNTO 2));
-                IF word_addr >= 0 AND word_addr < 2 ** ADDR_WIDTH THEN
-                    read_address <= STD_LOGIC_VECTOR(TO_UNSIGNED(word_addr, ADDR_WIDTH));
-                ELSE
-                    read_address <= (OTHERS => '0');
                 END IF;
             END IF;
         END IF;
     END PROCESS;
 
     -- Output data based on address region
-    rd_data <= data_memory(TO_INTEGER(UNSIGNED(read_address))) WHEN UNSIGNED(addr) >= DATA_BASE_ADDR ELSE
-               text_memory(TO_INTEGER(UNSIGNED(read_address)));
+    rd_data <= data_memory(TO_INTEGER(UNSIGNED(read_address))) WHEN is_data_region = '1' ELSE
+        text_memory(TO_INTEGER(UNSIGNED(read_address)));
 
 END ARCHITECTURE behavioral;
 
@@ -251,7 +265,8 @@ ARCHITECTURE testbench OF memory_tb IS
     END COMPONENT;
 
 BEGIN
-    clk <= NOT clk AFTER 5 ns WHEN NOT finished ELSE '0';
+    clk <= NOT clk AFTER 5 ns WHEN NOT finished ELSE
+        '0';
 
     uut : memory
     GENERIC MAP(
